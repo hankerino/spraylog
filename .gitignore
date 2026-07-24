@@ -1,0 +1,17 @@
+build/
+.dart_tool/
+.flutter-plugins
+.packages
+*.iml
+.idea/
+.vscode/
+.env
+.env.local
+*.lock
+.env.server
+supabase/.branches/
+supabase/.temp/
+.DS_Store
+**/*.key
+**/*.pem
+Thumbs.db
