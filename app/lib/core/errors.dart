@@ -1,14 +1,25 @@
-sealed class AppError implements Exception {
+sealed class AppError {
+  const AppError(this.message);
+
   final String message;
-  final Exception? cause;
-  AppError(this.message, {this.cause});
-  @override
-  String toString() => message;
 }
 
-final class AuthError extends AppError { AuthError(super.message, {super.cause}); }
-final class ValidationError extends AppError { ValidationError(super.message, {super.cause}); }
-final class SyncError extends AppError { SyncError(super.message, {super.cause}); }
-final class NetworkError extends AppError { NetworkError(super.message, {super.cause}); }
-final class NotFoundError extends AppError { NotFoundError(super.message, {super.cause}); }
-final class PermissionError extends AppError { PermissionError(super.message, {super.cause}); }
+final class ValidationError extends AppError {
+  const ValidationError(super.message);
+}
+
+final class NetworkError extends AppError {
+  const NetworkError(super.message);
+}
+
+final class DatabaseError extends AppError {
+  const DatabaseError(super.message);
+}
+
+final class AuthenticationError extends AppError {
+  const AuthenticationError(super.message);
+}
+
+final class UnknownError extends AppError {
+  const UnknownError(super.message);
+}

@@ -1,30 +1,20 @@
-sealed class Result<T, E> {
+import 'errors.dart';
+
+sealed class Result<T> {
   const Result();
-  factory Result.success(T value) => Success(value);
-  factory Result.error(E error) => Error(error);
 
-  Result<U, E> map<U>(U Function(T) f) => switch (this) {
-    Success(value: final v) => Result.success(f(v)),
-    Error(error: final e) => Result.error(e),
-  };
-
-  T unwrap() => switch (this) {
-    Success(value: final v) => v,
-    Error(error: final e) => throw e,
-  };
-
-  T? getOrNull() => switch (this) {
-    Success(value: final v) => v,
-    Error() => null,
-  };
+  bool get isSuccess => this is Success<T>;
+  bool get isFailure => this is Failure<T>;
 }
 
-final class Success<T, E> extends Result<T, E> {
-  final T value;
+final class Success<T> extends Result<T> {
   const Success(this.value);
+
+  final T value;
 }
 
-final class Error<T, E> extends Result<T, E> {
-  final E error;
-  const Error(this.error);
+final class Failure<T> extends Result<T> {
+  const Failure(this.error);
+
+  final AppError error;
 }
