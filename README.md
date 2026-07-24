@@ -1,11 +1,23 @@
-# SprayLog
+
 
 Voice-first pesticide application recordkeeping for small US applicators.
 
 ## Stack
-- Flutter/Dart (mobile & web)
-- Supabase backend
-- Riverpod state management
-- Drift local database
 
-See docs/ARCHITECTURE.md for full specification.
+- Flutter
+- Supabase
+- PostgreSQL
+- Drift
+- Riverpod
+- RevenueCat
+
+## Current Milestone
+
+M1 - Skeleton
+
+## Repository Layout
+
+- app/          Flutter client
+- supabase/     Database, migrations, edge functions
+- docs/         Architecture and specifications
+
