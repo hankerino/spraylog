@@ -1,8 +1,11 @@
+import '../../core/db/database.dart';
 import '../../core/result.dart';
 import '../models/outbox_item.dart';
 
 class OutboxRepository {
-  const OutboxRepository();
+  const OutboxRepository(this.database);
+
+  final AppDatabase database;
 
   Future<Result<void>> save(
     OutboxItemModel item,
