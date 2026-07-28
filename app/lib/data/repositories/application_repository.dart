@@ -10,6 +10,25 @@ class ApplicationRepository {
   Future<Result<void>> save(
     ApplicationModel application,
   ) async {
+    await database.into(
+      database.applications,
+    ).insert(
+      ApplicationsCompanion.insert(
+        id: application.id,
+        companyId: application.companyId,
+        applicatorId: application.applicatorId,
+        state: application.state,
+        appliedAt: application.appliedAt,
+        productId: application.productId,
+        epaRegNo: application.epaRegNo,
+        brandName: application.brandName,
+        rateValue: application.rateValue,
+        rateUnit: application.rateUnit,
+        areaValue: application.areaValue,
+        areaUnit: application.areaUnit,
+      ),
+    );
+
     return const Success(null);
   }
 
