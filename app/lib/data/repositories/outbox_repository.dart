@@ -26,12 +26,34 @@ class OutboxRepository {
   }
 
   Future<Result<List<OutboxItemModel>>> getPending() async {
-    return const Success([]);
+    final rows = await database.select(
+      database.outboxItems,
+    ).get();
+
+    final items = rows
+        .map(
+          (row) => OutboxItemModel(
+            id: row.id,
+            entity: row.entity,
+            operation: row.operation,
+            payload: row.payload,
+            attempts: row.attempts,
+            nextAttemptAt: row.nextAttemptAt,
+          ),
+        )
+        .toList();
+
+    return Success(items);
   }
 
   Future<Result<void>> delete(
     String id,
   ) async {
+    await (
+      database.delete(database.outboxItems)
+        ..where((row) => row.id.equals(id))
+    ).go();
+
     return const Success(null);
   }
 }
