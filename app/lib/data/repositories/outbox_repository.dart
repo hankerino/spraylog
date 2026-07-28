@@ -10,6 +10,18 @@ class OutboxRepository {
   Future<Result<void>> save(
     OutboxItemModel item,
   ) async {
+    await database.into(
+      database.outboxItems,
+    ).insert(
+      OutboxItemsCompanion.insert(
+        id: item.id,
+        entity: item.entity,
+        operation: item.operation,
+        payload: item.payload,
+        nextAttemptAt: item.nextAttemptAt,
+      ),
+    );
+
     return const Success(null);
   }
 
