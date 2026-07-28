@@ -26,11 +26,50 @@ class OutboxItems extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+class Applications extends Table {
+  TextColumn get id => text()();
+
+  TextColumn get companyId => text()();
+
+  TextColumn get applicatorId => text()();
+
+  TextColumn get state => text()();
+
+  DateTimeColumn get appliedAt => dateTime()();
+
+  TextColumn get productId => text()();
+
+  TextColumn get epaRegNo => text()();
+
+  TextColumn get brandName => text()();
+
+  RealColumn get rateValue => real()();
+
+  TextColumn get rateUnit => text()();
+
+  RealColumn get areaValue => real()();
+
+  TextColumn get areaUnit => text()();
+
+  DateTimeColumn get signedAt => dateTime().nullable()();
+
+  TextColumn get signedBy => text().nullable()();
+
+  TextColumn get recordHash => text().nullable()();
+
+  TextColumn get prevHash => text().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 @DriftDatabase(
   tables: [
     OutboxItems,
+    Applications,
   ],
 )
+
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
