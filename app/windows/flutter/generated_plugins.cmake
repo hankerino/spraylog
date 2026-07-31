@@ -4,6 +4,10 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   app_links
+  connectivity_plus
+  file_selector_windows
+  geolocator_windows
+  speech_to_text_windows
   sqlite3_flutter_libs
   url_launcher_windows
 )
