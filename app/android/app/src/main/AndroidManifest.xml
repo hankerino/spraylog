@@ -1,4 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Voice capture for the record flow (speech_to_text does not
+         declare this itself in 7.x). -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <application
         android:label="spraylog"
         android:name="${applicationName}"

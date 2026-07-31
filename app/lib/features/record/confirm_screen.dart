@@ -10,11 +10,16 @@ import '../../core/hash/record_hash.dart';
 import '../../core/providers.dart';
 import '../../core/result.dart';
 import '../../data/models/application.dart';
+import 'extraction_client.dart';
 import 'record_draft.dart';
 import 'record_validation.dart';
 
 /// Read-only review of the draft; any field can be tapped to edit inline.
 /// "Sign" hashes, persists, and enqueues the record for sync.
+///
+/// When the draft carries a voice [RecordDraft.transcript], extraction runs
+/// on arrival; any failure (stub, offline, unsupported) leaves every field
+/// manual with an inline hint.
 class ConfirmScreen extends ConsumerStatefulWidget {
   const ConfirmScreen({required this.draft, super.key});
 
@@ -28,6 +33,70 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
   late RecordDraft _draft = widget.draft;
   Map<String, String> _errors = const {};
   bool _signing = false;
+
+  bool _extracting = false;
+  bool _extractionUnavailable = false;
+  bool _productNeedsManualPick = false;
+  double? _extractionConfidence;
+
+  @override
+  void initState() {
+    super.initState();
+    final transcript = _draft.transcript;
+    if (transcript != null && transcript.isNotEmpty) {
+      _runExtraction(transcript);
+    }
+  }
+
+  Future<void> _runExtraction(String transcript) async {
+    setState(() => _extracting = true);
+    try {
+      final result =
+          await ref.read(extractionClientProvider).extract(transcript);
+      if (!mounted) return;
+      setState(() => _applyExtraction(result));
+    } catch (_) {
+      // Stub, offline, unsupported — the manual path is the fallback.
+      if (!mounted) return;
+      setState(() => _extractionUnavailable = true);
+    } finally {
+      if (mounted) setState(() => _extracting = false);
+    }
+  }
+
+  void _applyExtraction(ExtractionResult result) {
+    _extractionConfidence = result.confidence;
+    if (result.isLowConfidence) _productNeedsManualPick = true;
+
+    var updated = _draft;
+    final product = result.spokenProduct;
+    if (product != null && product.isNotEmpty) {
+      updated = updated.copyWith(brandName: product);
+    }
+    if (result.rateValue != null) {
+      updated = updated.copyWith(rateValue: result.rateValue);
+    }
+    final rateUnit = result.rateUnit;
+    if (rateUnit != null && RecordDraft.rateUnits.contains(rateUnit)) {
+      updated = updated.copyWith(rateUnit: rateUnit);
+    }
+    if (result.areaValue != null) {
+      updated = updated.copyWith(areaValue: result.areaValue);
+    }
+    final areaUnit = result.areaUnit;
+    if (areaUnit != null && RecordDraft.areaUnits.contains(areaUnit)) {
+      updated = updated.copyWith(areaUnit: areaUnit);
+    }
+    final pest = result.targetPest;
+    if (pest != null && pest.isNotEmpty) {
+      updated = updated.copyWith(targetPest: pest);
+    }
+    final method = result.applicationMethod;
+    if (method != null && RecordDraft.applicationMethods.contains(method)) {
+      updated = updated.copyWith(applicationMethod: method);
+    }
+    _draft = updated;
+  }
 
   Future<void> _editText({
     required String title,
@@ -135,6 +204,7 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
       };
 
       final now = DateTime.now().toUtc();
+      final transcript = _draft.transcript?.trim();
       var record = ApplicationModel(
         id: const Uuid().v4(),
         companyId: profile.companyId,
@@ -152,6 +222,9 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
             ? null
             : _draft.targetPest.trim(),
         applicationMethod: _draft.applicationMethod,
+        transcript:
+            transcript == null || transcript.isEmpty ? null : transcript,
+        extractionConfidence: _extractionConfidence,
         signedAt: now,
         signedBy: userId,
         prevHash: prevHash,
@@ -198,19 +271,87 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
     required String label,
     required String value,
     String? error,
+    String? warning,
     VoidCallback? onTap,
   }) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      title: Text(label),
-      subtitle: Text(value.isEmpty ? '—' : value),
+      title: Row(
+        children: [
+          Flexible(child: Text(label)),
+          if (warning != null) ...[
+            const SizedBox(width: 6),
+            Icon(
+              Icons.warning_amber,
+              size: 18,
+              color: Theme.of(context).colorScheme.tertiary,
+            ),
+          ],
+        ],
+      ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(value.isEmpty ? '—' : value),
+          if (warning != null)
+            Text(
+              warning,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.tertiary,
+                fontSize: 12,
+              ),
+            ),
+        ],
+      ),
       subtitleTextStyle: error != null
           ? TextStyle(color: Theme.of(context).colorScheme.error)
           : null,
       trailing: const Icon(Icons.edit, size: 18),
       onTap: onTap,
-      isThreeLine: error != null,
+      isThreeLine: error != null || warning != null,
       enabled: onTap != null,
+    );
+  }
+
+  Widget _transcriptCard(BuildContext context) {
+    final transcript = _draft.transcript;
+    if (transcript == null || transcript.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Voice transcript',
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              transcript,
+              style: const TextStyle(fontStyle: FontStyle.italic),
+            ),
+            if (_extracting)
+              const Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: LinearProgressIndicator(),
+              ),
+            if (_extractionUnavailable)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  'Extraction unavailable — fill the fields manually.',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -223,6 +364,7 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          _transcriptCard(context),
           if (_errors.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
@@ -237,6 +379,9 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
             label: 'Product brand name',
             value: _draft.brandName,
             error: _errors['brandName'],
+            warning: _productNeedsManualPick
+                ? 'Low-confidence extraction — needs manual pick'
+                : null,
             onTap: () => _editText(
               title: 'Product brand name',
               initial: _draft.brandName,

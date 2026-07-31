@@ -1,5 +1,6 @@
 /// Mutable-in-spirit draft passed from the entry form to the confirm screen.
 /// Numeric fields stay null until the user enters a parseable value.
+/// [transcript] carries a voice-captured transcript for extraction.
 class RecordDraft {
   const RecordDraft({
     this.brandName = '',
@@ -11,6 +12,7 @@ class RecordDraft {
     this.applicationMethod = 'broadcast',
     required this.appliedAt,
     this.state = '',
+    this.transcript,
   });
 
   final String brandName;
@@ -22,6 +24,7 @@ class RecordDraft {
   final String applicationMethod;
   final DateTime appliedAt;
   final String state;
+  final String? transcript;
 
   static const rateUnits = [
     'oz_per_1000sqft',
@@ -53,6 +56,7 @@ class RecordDraft {
     String? applicationMethod,
     DateTime? appliedAt,
     String? state,
+    String? transcript,
   }) {
     return RecordDraft(
       brandName: brandName ?? this.brandName,
@@ -64,6 +68,7 @@ class RecordDraft {
       applicationMethod: applicationMethod ?? this.applicationMethod,
       appliedAt: appliedAt ?? this.appliedAt,
       state: state ?? this.state,
+      transcript: transcript ?? this.transcript,
     );
   }
 }
