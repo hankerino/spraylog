@@ -5,6 +5,7 @@ import 'package:speech_to_text/speech_recognition_error.dart' as stt;
 import 'package:speech_to_text/speech_recognition_result.dart' as stt;
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
+import '../../core/widgets/section_header.dart';
 import 'record_draft.dart';
 
 /// Manual entry form for a new application record, with walkie-talkie
@@ -213,153 +214,167 @@ class _RecordScreenState extends State<RecordScreen> {
       appBar: AppBar(
         title: const Text('Record application'),
       ),
-      body: Column(
+      body: ListView(
+        padding: const EdgeInsets.all(16),
         children: [
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                TextField(
-                  controller: _brandNameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Product brand name',
-                    border: OutlineInputBorder(),
-                  ),
-                  textCapitalization: TextCapitalization.words,
+          const SectionHeader('Product'),
+          Card(
+            margin: EdgeInsets.zero,
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: TextField(
+                controller: _brandNameController,
+                decoration: const InputDecoration(
+                  labelText: 'Product brand name',
                 ),
-                const SizedBox(height: 16),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _rateValueController,
-                        decoration: const InputDecoration(
-                          labelText: 'Rate',
-                          border: OutlineInputBorder(),
-                        ),
-                        keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: DropdownButtonFormField<String>(
-                        initialValue: _rateUnit,
-                        decoration: const InputDecoration(
-                          labelText: 'Rate unit',
-                          border: OutlineInputBorder(),
-                        ),
-                        items: [
-                          for (final unit in RecordDraft.rateUnits)
-                            DropdownMenuItem(value: unit, child: Text(unit)),
-                        ],
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() => _rateUnit = value);
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _areaValueController,
-                        decoration: const InputDecoration(
-                          labelText: 'Area treated',
-                          border: OutlineInputBorder(),
-                        ),
-                        keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: DropdownButtonFormField<String>(
-                        initialValue: _areaUnit,
-                        decoration: const InputDecoration(
-                          labelText: 'Area unit',
-                          border: OutlineInputBorder(),
-                        ),
-                        items: [
-                          for (final unit in RecordDraft.areaUnits)
-                            DropdownMenuItem(value: unit, child: Text(unit)),
-                        ],
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() => _areaUnit = value);
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _targetPestController,
-                  decoration: const InputDecoration(
-                    labelText: 'Target pest (optional)',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  initialValue: _applicationMethod,
-                  decoration: const InputDecoration(
-                    labelText: 'Application method',
-                    border: OutlineInputBorder(),
-                  ),
-                  items: [
-                    for (final method in RecordDraft.applicationMethods)
-                      DropdownMenuItem(value: method, child: Text(method)),
-                  ],
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() => _applicationMethod = value);
-                    }
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _stateController,
-                  decoration: const InputDecoration(
-                    labelText: 'State (e.g. FL)',
-                    border: OutlineInputBorder(),
-                    counterText: '',
-                  ),
-                  textCapitalization: TextCapitalization.characters,
-                  maxLength: 2,
-                ),
-                const SizedBox(height: 16),
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: const Text('Applied at'),
-                  subtitle: Text(
-                    DateFormat('yyyy-MM-dd HH:mm').format(_appliedAt),
-                  ),
-                  trailing: const Icon(Icons.edit_calendar),
-                  onTap: _pickAppliedAt,
-                ),
-                const SizedBox(height: 24),
-                FilledButton(
-                  onPressed: _continue,
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                    child: Text('Continue'),
-                  ),
-                ),
-              ],
+                textCapitalization: TextCapitalization.words,
+              ),
             ),
           ),
-          if (_listening || _transcript != null || _speechError != null)
-            _voicePanel(context),
+          const SizedBox(height: 20),
+          const SectionHeader('Rate & Area'),
+          Card(
+            margin: EdgeInsets.zero,
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                children: [
+                  TextField(
+                    controller: _rateValueController,
+                    decoration: const InputDecoration(
+                      labelText: 'Rate',
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  DropdownButtonFormField<String>(
+                    initialValue: _rateUnit,
+                    isExpanded: true,
+                    decoration: const InputDecoration(
+                      labelText: 'Rate unit',
+                    ),
+                    items: [
+                      for (final unit in RecordDraft.rateUnits)
+                        DropdownMenuItem(
+                          value: unit,
+                          child: Text(
+                            unit,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() => _rateUnit = value);
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _areaValueController,
+                    decoration: const InputDecoration(
+                      labelText: 'Area treated',
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  DropdownButtonFormField<String>(
+                    initialValue: _areaUnit,
+                    isExpanded: true,
+                    decoration: const InputDecoration(
+                      labelText: 'Area unit',
+                    ),
+                    items: [
+                      for (final unit in RecordDraft.areaUnits)
+                        DropdownMenuItem(
+                          value: unit,
+                          child: Text(
+                            unit,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() => _areaUnit = value);
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          const SectionHeader('Details'),
+          Card(
+            margin: EdgeInsets.zero,
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                children: [
+                  TextField(
+                    controller: _targetPestController,
+                    decoration: const InputDecoration(
+                      labelText: 'Target pest (optional)',
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  DropdownButtonFormField<String>(
+                    initialValue: _applicationMethod,
+                    isExpanded: true,
+                    decoration: const InputDecoration(
+                      labelText: 'Application method',
+                    ),
+                    items: [
+                      for (final method in RecordDraft.applicationMethods)
+                        DropdownMenuItem(value: method, child: Text(method)),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() => _applicationMethod = value);
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _stateController,
+                    decoration: const InputDecoration(
+                      labelText: 'State (e.g. FL)',
+                      counterText: '',
+                    ),
+                    textCapitalization: TextCapitalization.characters,
+                    maxLength: 2,
+                  ),
+                  const SizedBox(height: 4),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('Applied at'),
+                    subtitle: Text(
+                      DateFormat('yyyy-MM-dd HH:mm').format(_appliedAt),
+                    ),
+                    trailing: const Icon(Icons.edit_calendar),
+                    onTap: _pickAppliedAt,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          const SectionHeader('Voice'),
+          _voicePanel(context),
+          const SizedBox(height: 24),
+          FilledButton(
+            onPressed: _continue,
+            child: const Padding(
+              padding: EdgeInsets.symmetric(vertical: 12),
+              child: Text('Continue'),
+            ),
+          ),
+          const SizedBox(height: 8),
         ],
       ),
       bottomNavigationBar: SafeArea(
@@ -398,14 +413,38 @@ class _RecordScreenState extends State<RecordScreen> {
 
   Widget _voicePanel(BuildContext context) {
     final error = _speechError;
+    final idle =
+        !_listening && _transcript == null && error == null;
     return Card(
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      margin: EdgeInsets.zero,
+      color: Theme.of(context)
+          .colorScheme
+          .primaryContainer
+          .withValues(alpha: 0.4),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (idle)
+              Row(
+                children: [
+                  Icon(
+                    Icons.mic_none,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Tap to talk below to dictate this record.',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             if (error != null)
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -437,13 +476,19 @@ class _RecordScreenState extends State<RecordScreen> {
                       (_transcript ?? '').isEmpty
                           ? 'Listening…'
                           : _transcript!,
-                      style: const TextStyle(fontStyle: FontStyle.italic),
+                      style: const TextStyle(
+                        fontStyle: FontStyle.italic,
+                        height: 1.4,
+                      ),
                     ),
                   ),
                 ],
               ),
             if (!_listening && _transcript != null) ...[
-              Text(_transcript!),
+              Text(
+                _transcript!,
+                style: const TextStyle(height: 1.4),
+              ),
               const SizedBox(height: 8),
               Row(
                 children: [

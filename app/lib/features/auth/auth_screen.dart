@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/providers.dart';
+import '../../core/theme/spraylog_theme.dart';
 
 /// Email + password sign-in / sign-up. Magic link fallback per spec §4.
 class AuthScreen extends ConsumerStatefulWidget {
@@ -95,8 +96,20 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
               shrinkWrap: true,
               padding: const EdgeInsets.all(24),
               children: [
+                const Icon(
+                  Icons.spa,
+                  size: 44,
+                  color: SpraylogTheme.brandTurf,
+                ),
+                const SizedBox(height: 8),
                 Text('SprayLog',
-                    style: Theme.of(context).textTheme.headlineLarge,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineLarge
+                        ?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontWeight: FontWeight.w800,
+                        ),
                     textAlign: TextAlign.center),
                 const SizedBox(height: 8),
                 Text(

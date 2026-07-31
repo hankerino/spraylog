@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/providers.dart';
+import 'sync_status_chip.dart';
 
 /// Local application records, newest first, with per-record sync state.
 class HistoryScreen extends ConsumerWidget {
@@ -50,26 +51,24 @@ class HistoryScreen extends ConsumerWidget {
               for (final item in pending.valueOrNull ?? const []) item.id,
             };
             return ListView.builder(
+              padding: const EdgeInsets.all(16),
               itemCount: records.length,
               itemBuilder: (context, index) {
                 final record = records[index];
-                final synced = !pendingIds.contains(record.id);
-                return ListTile(
-                  title: Text(record.brandName),
-                  subtitle: Text(
-                    '${DateFormat('yyyy-MM-dd HH:mm').format(record.appliedAt.toLocal())} · ${record.state}',
-                  ),
-                  trailing: Chip(
-                    label: Text(
-                      record.signedAt == null
-                          ? 'unsigned'
-                          : synced
-                              ? 'synced'
-                              : 'pending',
+                final isPending = pendingIds.contains(record.id);
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  child: ListTile(
+                    title: Text(record.brandName),
+                    subtitle: Text(
+                      '${DateFormat('yyyy-MM-dd HH:mm').format(record.appliedAt.toLocal())} · ${record.state}',
                     ),
-                    visualDensity: VisualDensity.compact,
+                    trailing: SyncStatusChip(
+                      signed: record.signedAt != null,
+                      pending: isPending,
+                    ),
+                    onTap: () => context.push('/history/${record.id}'),
                   ),
-                  onTap: () => context.push('/history/${record.id}'),
                 );
               },
             );

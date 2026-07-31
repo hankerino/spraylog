@@ -9,6 +9,8 @@ import 'package:uuid/uuid.dart';
 import '../../core/hash/record_hash.dart';
 import '../../core/providers.dart';
 import '../../core/result.dart';
+import '../../core/theme/spraylog_theme.dart';
+import '../../core/widgets/section_header.dart';
 import '../../data/models/application.dart';
 import 'extraction_client.dart';
 import 'record_draft.dart';
@@ -38,6 +40,7 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
   bool _extractionUnavailable = false;
   bool _productNeedsManualPick = false;
   double? _extractionConfidence;
+  ExtractionResult? _lastExtraction;
 
   @override
   void initState() {
@@ -65,6 +68,7 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
   }
 
   void _applyExtraction(ExtractionResult result) {
+    _lastExtraction = result;
     _extractionConfidence = result.confidence;
     if (result.isLowConfidence) _productNeedsManualPick = true;
 
@@ -313,13 +317,52 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
     );
   }
 
+  Widget _sectionCard(List<Widget> fields) {
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Column(
+          children: [
+            for (var i = 0; i < fields.length; i++) ...[
+              if (i > 0) const Divider(height: 1),
+              fields[i],
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _transcriptCard(BuildContext context) {
     final transcript = _draft.transcript;
     if (transcript == null || transcript.isEmpty) {
-      return const SizedBox.shrink();
+      return Card(
+        margin: EdgeInsets.zero,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              Icon(
+                Icons.mic_none,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'No voice transcript — record was entered manually.',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
     }
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: EdgeInsets.zero,
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -349,6 +392,17 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
                   ),
                 ),
               ),
+            if (_lastExtraction != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  'Extraction confidence ${(_extractionConfidence! * 100).round()}%',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
           ],
         ),
       ),
@@ -357,6 +411,7 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final extraction = _lastExtraction;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Confirm record'),
@@ -364,7 +419,6 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _transcriptCard(context),
           if (_errors.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
@@ -375,126 +429,202 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
                 ),
               ),
             ),
-          _field(
-            label: 'Product brand name',
-            value: _draft.brandName,
-            error: _errors['brandName'],
-            warning: _productNeedsManualPick
-                ? 'Low-confidence extraction — needs manual pick'
-                : null,
-            onTap: () => _editText(
-              title: 'Product brand name',
-              initial: _draft.brandName,
-              onSave: (value) =>
-                  setState(() => _draft = _draft.copyWith(brandName: value)),
+          const SectionHeader('Record'),
+          _sectionCard([
+            _field(
+              label: 'Product brand name',
+              value: _draft.brandName,
+              error: _errors['brandName'],
+              warning: _productNeedsManualPick
+                  ? 'Low-confidence extraction — needs manual pick'
+                  : null,
+              onTap: () => _editText(
+                title: 'Product brand name',
+                initial: _draft.brandName,
+                onSave: (value) =>
+                    setState(() => _draft = _draft.copyWith(brandName: value)),
+              ),
             ),
-          ),
-          _field(
-            label: 'Rate',
-            value: _draft.rateValue == null
-                ? ''
-                : '${_draft.rateValue} ${_draft.rateUnit}',
-            error: _errors['rateValue'],
-            onTap: () => _editText(
-              title: 'Rate',
-              initial: _draft.rateValue?.toString() ?? '',
-              numeric: true,
-              onSave: (value) => setState(
-                () => _draft = _draft.copyWith(
-                  rateValue: double.tryParse(value.trim()),
+            _field(
+              label: 'Rate',
+              value: _draft.rateValue == null
+                  ? ''
+                  : '${_draft.rateValue} ${_draft.rateUnit}',
+              error: _errors['rateValue'],
+              onTap: () => _editText(
+                title: 'Rate',
+                initial: _draft.rateValue?.toString() ?? '',
+                numeric: true,
+                onSave: (value) => setState(
+                  () => _draft = _draft.copyWith(
+                    rateValue: double.tryParse(value.trim()),
+                  ),
+                ),
+              ),
+            ),
+            _field(
+              label: 'Rate unit',
+              value: _draft.rateUnit,
+              onTap: () => _editChoice(
+                title: 'Rate unit',
+                options: RecordDraft.rateUnits,
+                onSave: (value) =>
+                    setState(() => _draft = _draft.copyWith(rateUnit: value)),
+              ),
+            ),
+            _field(
+              label: 'Area treated',
+              value: _draft.areaValue == null
+                  ? ''
+                  : '${_draft.areaValue} ${_draft.areaUnit}',
+              error: _errors['areaValue'],
+              onTap: () => _editText(
+                title: 'Area treated',
+                initial: _draft.areaValue?.toString() ?? '',
+                numeric: true,
+                onSave: (value) => setState(
+                  () => _draft = _draft.copyWith(
+                    areaValue: double.tryParse(value.trim()),
+                  ),
+                ),
+              ),
+            ),
+            _field(
+              label: 'Area unit',
+              value: _draft.areaUnit,
+              onTap: () => _editChoice(
+                title: 'Area unit',
+                options: RecordDraft.areaUnits,
+                onSave: (value) =>
+                    setState(() => _draft = _draft.copyWith(areaUnit: value)),
+              ),
+            ),
+            _field(
+              label: 'Target pest',
+              value: _draft.targetPest,
+              onTap: () => _editText(
+                title: 'Target pest',
+                initial: _draft.targetPest,
+                onSave: (value) => setState(
+                  () => _draft = _draft.copyWith(targetPest: value),
+                ),
+              ),
+            ),
+            _field(
+              label: 'Application method',
+              value: _draft.applicationMethod,
+              onTap: () => _editChoice(
+                title: 'Application method',
+                options: RecordDraft.applicationMethods,
+                onSave: (value) => setState(
+                  () => _draft = _draft.copyWith(applicationMethod: value),
+                ),
+              ),
+            ),
+            _field(
+              label: 'Applied at',
+              value: DateFormat('yyyy-MM-dd HH:mm').format(_draft.appliedAt),
+              onTap: _editAppliedAt,
+            ),
+          ]),
+          const SizedBox(height: 20),
+          const SectionHeader('Site & Weather'),
+          _sectionCard([
+            _field(
+              label: 'State',
+              value: _draft.state,
+              error: _errors['state'],
+              onTap: () => _editText(
+                title: 'State (e.g. FL)',
+                initial: _draft.state,
+                onSave: (value) =>
+                    setState(() => _draft = _draft.copyWith(state: value)),
+              ),
+            ),
+            if (extraction?.siteHint != null)
+              _field(label: 'Site', value: extraction!.siteHint!),
+            if (extraction?.tempF != null)
+              _field(label: 'Temp (F)', value: '${extraction!.tempF}'),
+            if (extraction?.windMph != null ||
+                extraction?.windDirection != null)
+              _field(
+                label: 'Wind',
+                value: [
+                  if (extraction!.windMph != null)
+                    '${extraction.windMph} mph',
+                  if (extraction.windDirection != null)
+                    extraction.windDirection!,
+                ].join(' '),
+              ),
+          ]),
+          const SizedBox(height: 20),
+          const SectionHeader('Extraction'),
+          _transcriptCard(context),
+          const SizedBox(height: 20),
+          const SectionHeader('Sign-off'),
+          Opacity(
+            opacity: _signing ? 0.7 : 1,
+            child: SizedBox(
+              width: double.infinity,
+              height: 54,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      SpraylogTheme.brandTurf,
+                      SpraylogTheme.brandTurfDark,
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: _signing ? null : _sign,
+                    child: Center(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (_signing)
+                            const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          else
+                            const Icon(Icons.draw, color: Colors.white),
+                          const SizedBox(width: 8),
+                          Text(
+                            _signing ? 'Signing…' : 'Sign',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
-          _field(
-            label: 'Rate unit',
-            value: _draft.rateUnit,
-            onTap: () => _editChoice(
-              title: 'Rate unit',
-              options: RecordDraft.rateUnits,
-              onSave: (value) =>
-                  setState(() => _draft = _draft.copyWith(rateUnit: value)),
-            ),
-          ),
-          _field(
-            label: 'Area treated',
-            value: _draft.areaValue == null
-                ? ''
-                : '${_draft.areaValue} ${_draft.areaUnit}',
-            error: _errors['areaValue'],
-            onTap: () => _editText(
-              title: 'Area treated',
-              initial: _draft.areaValue?.toString() ?? '',
-              numeric: true,
-              onSave: (value) => setState(
-                () => _draft = _draft.copyWith(
-                  areaValue: double.tryParse(value.trim()),
+          const SizedBox(height: 8),
+          Text(
+            'Signing locks the record and chains its hash.',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
-              ),
-            ),
           ),
-          _field(
-            label: 'Area unit',
-            value: _draft.areaUnit,
-            onTap: () => _editChoice(
-              title: 'Area unit',
-              options: RecordDraft.areaUnits,
-              onSave: (value) =>
-                  setState(() => _draft = _draft.copyWith(areaUnit: value)),
-            ),
-          ),
-          _field(
-            label: 'Target pest',
-            value: _draft.targetPest,
-            onTap: () => _editText(
-              title: 'Target pest',
-              initial: _draft.targetPest,
-              onSave: (value) =>
-                  setState(() => _draft = _draft.copyWith(targetPest: value)),
-            ),
-          ),
-          _field(
-            label: 'Application method',
-            value: _draft.applicationMethod,
-            onTap: () => _editChoice(
-              title: 'Application method',
-              options: RecordDraft.applicationMethods,
-              onSave: (value) => setState(
-                () => _draft = _draft.copyWith(applicationMethod: value),
-              ),
-            ),
-          ),
-          _field(
-            label: 'State',
-            value: _draft.state,
-            error: _errors['state'],
-            onTap: () => _editText(
-              title: 'State (e.g. FL)',
-              initial: _draft.state,
-              onSave: (value) =>
-                  setState(() => _draft = _draft.copyWith(state: value)),
-            ),
-          ),
-          _field(
-            label: 'Applied at',
-            value: DateFormat('yyyy-MM-dd HH:mm').format(_draft.appliedAt),
-            onTap: _editAppliedAt,
-          ),
-          const SizedBox(height: 24),
-          FilledButton.icon(
-            onPressed: _signing ? null : _sign,
-            icon: _signing
-                ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.draw),
-            label: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Text(_signing ? 'Signing…' : 'Sign'),
-            ),
-          ),
+          const SizedBox(height: 8),
         ],
       ),
     );

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/providers.dart';
+import '../core/theme/spraylog_theme.dart';
 import '../features/auth/auth_screen.dart';
 import '../features/auth/auth_state.dart';
 import '../features/history/history_screen.dart';
@@ -90,7 +91,10 @@ class App extends ConsumerWidget {
 
     return MaterialApp.router(
       title: 'SprayLog',
-      theme: ThemeData(useMaterial3: true),
+      debugShowCheckedModeBanner: false,
+      theme: SpraylogTheme.light,
+      darkTheme: SpraylogTheme.dark,
+      themeMode: ThemeMode.light,
       routerConfig: router,
     );
   }

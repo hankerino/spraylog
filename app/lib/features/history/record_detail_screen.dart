@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../core/providers.dart';
 import '../../data/models/application.dart';
 import '../../data/models/outbox_item.dart';
+import 'sync_status_chip.dart';
 
 /// Read-only detail of a single record, including hash-chain fields.
 class RecordDetailScreen extends ConsumerWidget {
@@ -87,50 +88,85 @@ class RecordDetailScreen extends ConsumerWidget {
     ApplicationModel record,
     List<OutboxItemModel> pendingItems,
   ) {
-    final pendingIds = {for (final item in pendingItems) item.id};
-    final synced = !pendingIds.contains(record.id);
-    final syncLabel = record.signedAt == null
-        ? 'unsigned'
-        : synced
-            ? 'synced'
-            : 'pending sync';
+    final isPending = pendingItems.any((item) => item.id == record.id);
 
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        _row('Brand name', record.brandName),
-        _row('Applied at',
-            DateFormat('yyyy-MM-dd HH:mm').format(record.appliedAt.toLocal())),
-        _row('State', record.state),
-        _row('Rate', '${record.rateValue} ${record.rateUnit}'),
-        _row('Area', '${record.areaValue} ${record.areaUnit}'),
-        _row('Target pest', record.targetPest),
-        _row('Method', record.applicationMethod),
-        _row('Product id', record.productId),
-        _row('EPA reg no', record.epaRegNo),
-        _row('Total amount', record.totalAmountValue == null
-            ? null
-            : '${record.totalAmountValue} ${record.totalAmountUnit ?? ''}'),
-        _row('Customer', record.customerId),
-        _row('Site', record.siteId),
-        _row('GPS', record.lat == null
-            ? null
-            : '${record.lat}, ${record.lng}'),
-        _row('Temp (F)', record.tempF?.toString()),
-        _row('Wind (mph)', record.windMph?.toString()),
-        _row('Wind direction', record.windDirection),
-        _row('Weather source', record.weatherSource),
-        _row('Rate flag', record.rateFlag),
-        _row('Override reason', record.overrideReason),
-        _row('Signed at', record.signedAt == null
-            ? null
-            : DateFormat('yyyy-MM-dd HH:mm')
-                .format(record.signedAt!.toLocal())),
-        _row('Signed by', record.signedBy),
-        _row('Sync state', syncLabel),
-        const Divider(height: 24),
-        _hashRow('record_hash', record.recordHash),
-        _hashRow('prev_hash', record.prevHash),
+        Card(
+          margin: EdgeInsets.zero,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _row('Brand name', record.brandName),
+                _row('Applied at',
+                    DateFormat('yyyy-MM-dd HH:mm')
+                        .format(record.appliedAt.toLocal())),
+                _row('State', record.state),
+                _row('Rate', '${record.rateValue} ${record.rateUnit}'),
+                _row('Area', '${record.areaValue} ${record.areaUnit}'),
+                _row('Target pest', record.targetPest),
+                _row('Method', record.applicationMethod),
+                _row('Product id', record.productId),
+                _row('EPA reg no', record.epaRegNo),
+                _row('Total amount', record.totalAmountValue == null
+                    ? null
+                    : '${record.totalAmountValue} ${record.totalAmountUnit ?? ''}'),
+                _row('Customer', record.customerId),
+                _row('Site', record.siteId),
+                _row('GPS', record.lat == null
+                    ? null
+                    : '${record.lat}, ${record.lng}'),
+                _row('Temp (F)', record.tempF?.toString()),
+                _row('Wind (mph)', record.windMph?.toString()),
+                _row('Wind direction', record.windDirection),
+                _row('Weather source', record.weatherSource),
+                _row('Rate flag', record.rateFlag),
+                _row('Override reason', record.overrideReason),
+                _row('Signed at', record.signedAt == null
+                    ? null
+                    : DateFormat('yyyy-MM-dd HH:mm')
+                        .format(record.signedAt!.toLocal())),
+                _row('Signed by', record.signedBy),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        width: 140,
+                        child: Text(
+                          'Sync state',
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      SyncStatusChip(
+                        signed: record.signedAt != null,
+                        pending: isPending,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Card(
+          margin: EdgeInsets.zero,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _hashRow('record_hash', record.recordHash),
+                _hashRow('prev_hash', record.prevHash),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }
