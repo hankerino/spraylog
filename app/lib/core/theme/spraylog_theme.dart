@@ -52,15 +52,18 @@ class SpraylogTheme {
       seedColor: brandNavy,
       brightness: Brightness.dark,
     ).copyWith(
-      primary: brandNavy,
-      onPrimary: Colors.white,
+      // True black canvas per user direction; cards lift off it slightly.
+      primary: const Color(0xFF6C8FB0), // lighter navy for contrast on black
+      onPrimary: Colors.black,
       primaryContainer: const Color(0xFF16324F),
       onPrimaryContainer: const Color(0xFFDDE4EB),
-      secondary: const Color(0xFFB9CDBB),
-      surface: const Color(0xFF141A15),
-      onSurface: const Color(0xFFE8EDE6),
+      secondary: brandSky,
+      onSecondary: Colors.black,
+      surface: Colors.black,
+      onSurface: const Color(0xFFEAEFF4),
+      surfaceContainerHighest: const Color(0xFF161B20),
     );
-    return _build(scheme, inputFill: const Color(0xFF1D241E));
+    return _build(scheme, inputFill: const Color(0xFF161B20));
   }
 
   static ThemeData _build(

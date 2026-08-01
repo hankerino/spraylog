@@ -5,6 +5,9 @@ import 'package:intl/intl.dart';
 import '../../core/providers.dart';
 import '../../data/models/application.dart';
 import '../../data/models/outbox_item.dart';
+import 'amendments.dart';
+import 'application_photos.dart';
+import 'notices.dart';
 import 'sync_status_chip.dart';
 
 /// Read-only detail of a single record, including hash-chain fields.
@@ -65,10 +68,19 @@ class RecordDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final application = ref.watch(applicationByIdProvider(id));
     final pending = ref.watch(pendingOutboxProvider);
+    final record = application.valueOrNull;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Record detail'),
+        actions: [
+          if (record?.signedAt != null)
+            IconButton(
+              icon: const Icon(Icons.edit_note),
+              tooltip: 'Amend record',
+              onPressed: () => showAmendDialog(context, ref, record!),
+            ),
+        ],
       ),
       body: application.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -167,6 +179,11 @@ class RecordDetailScreen extends ConsumerWidget {
             ),
           ),
         ),
+        const SizedBox(height: 20),
+        RecordPhotosSection(applicationId: record.id),
+        AmendmentsSection(applicationId: record.id),
+        NoticesSection(record: record),
+        const SizedBox(height: 8),
       ],
     );
   }

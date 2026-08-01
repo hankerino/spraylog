@@ -7,6 +7,8 @@ import '../core/sync/catalogue_sync.dart';
 import '../core/theme/spraylog_theme.dart';
 import '../features/auth/auth_screen.dart';
 import '../features/auth/auth_state.dart';
+import '../features/customers/customers_screen.dart';
+import '../features/export/export_screen.dart';
 import '../features/history/history_screen.dart';
 import '../features/history/record_detail_screen.dart';
 import '../features/home/home_screen.dart';
@@ -88,6 +90,14 @@ class App extends ConsumerWidget {
             ),
           ],
         ),
+        GoRoute(
+          path: '/customers',
+          builder: (context, state) => const CustomersScreen(),
+        ),
+        GoRoute(
+          path: '/export',
+          builder: (context, state) => const ExportScreen(),
+        ),
       ],
     );
 
@@ -96,7 +106,7 @@ class App extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: SpraylogTheme.light,
       darkTheme: SpraylogTheme.dark,
-      themeMode: ThemeMode.light,
+      themeMode: ref.watch(themeModeProvider),
       routerConfig: router,
     );
   }

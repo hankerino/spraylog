@@ -1,4 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -143,3 +144,6 @@ final outboxReconnectSyncProvider = Provider<void>((ref) {
     fireImmediately: false,
   );
 });
+
+/// Light/dark override. Defaults to following the system setting.
+final themeModeProvider = StateProvider<ThemeMode>((ref) => ThemeMode.system);

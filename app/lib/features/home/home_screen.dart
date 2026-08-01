@@ -29,6 +29,26 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('SprayLog'),
+        actions: [
+          IconButton(
+            tooltip: 'Toggle dark mode',
+            icon: Icon(
+              Theme.of(context).brightness == Brightness.dark
+                  ? Icons.light_mode
+                  : Icons.dark_mode,
+            ),
+            onPressed: () {
+              final current = ref.read(themeModeProvider);
+              final isDark =
+                  current == ThemeMode.dark ||
+                  (current == ThemeMode.system &&
+                      MediaQuery.of(context).platformBrightness ==
+                          Brightness.dark);
+              ref.read(themeModeProvider.notifier).state =
+                  isDark ? ThemeMode.light : ThemeMode.dark;
+            },
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -156,6 +176,18 @@ class HomeScreen extends ConsumerWidget {
             title: const Text('History'),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push('/history'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.people_outline),
+            title: const Text('Customers'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/customers'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.ios_share),
+            title: const Text('State export'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/export'),
           ),
         ],
       ),
