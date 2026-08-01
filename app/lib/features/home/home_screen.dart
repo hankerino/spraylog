@@ -41,8 +41,8 @@ class HomeScreen extends ConsumerWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  SpraylogTheme.brandTurf,
-                  SpraylogTheme.brandTurfDark,
+                  SpraylogTheme.brandSky,
+                  SpraylogTheme.brandSkyDeep,
                 ],
               ),
               borderRadius: BorderRadius.circular(16),
@@ -88,18 +88,42 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
           const SizedBox(height: 16),
-          FilledButton.icon(
-            onPressed: () => context.push('/record'),
-            style: FilledButton.styleFrom(
-              minimumSize: const Size.fromHeight(56),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  SpraylogTheme.brandSky,
+                  SpraylogTheme.brandSkyDeep,
+                ],
+              ),
+              borderRadius: BorderRadius.circular(12),
             ),
-            icon: const Icon(Icons.add),
-            label: Text(
-              'Record application',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                    fontWeight: FontWeight.w600,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => context.push('/record'),
+                borderRadius: BorderRadius.circular(12),
+                child: SizedBox(
+                  height: 56,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.add, color: Colors.white),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Record application',
+                        style:
+                            Theme.of(context).textTheme.titleLarge?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                      ),
+                    ],
                   ),
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 24),
