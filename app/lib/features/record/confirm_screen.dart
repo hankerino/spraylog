@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -14,6 +15,7 @@ import '../../core/match/product_matcher.dart';
 import '../../core/providers.dart';
 import '../../core/result.dart';
 import '../../core/sync/catalogue_sync.dart';
+import '../../core/sync/photo_uploader.dart';
 import '../../core/theme/spraylog_theme.dart';
 import '../../core/widgets/section_header.dart';
 import '../../data/models/application.dart';
@@ -447,9 +449,18 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
 
       final photos = _draft.photoPaths;
       if (photos != null && photos.isNotEmpty) {
-        // Photo upload (Storage) lands in a later milestone; paths are
-        // local-only for now.
-        debugPrint('record ${record.id} attached photos: $photos');
+        // Fire-and-forget: uploads happen online at sign time only and a
+        // failed photo never blocks the record. Offline photo sync via
+        // the outbox is a follow-up; files stay on device until then.
+        unawaited(
+          ref.read(photoUploaderProvider).upload(
+                companyId: profile.companyId,
+                applicationId: record.id,
+                filePaths: photos,
+                lat: _draft.lat,
+                lng: _draft.lng,
+              ),
+        );
       }
 
       ref.invalidate(applicationsProvider);
