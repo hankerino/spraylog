@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/spraylog_theme.dart';
 
-/// Colored sync-state chip: synced = turf, pending = amber, unsigned =
+/// Colored sync-state chip: synced = sky, pending = amber, unsigned =
 /// error tint. Used by the history list and the record detail screen.
 class SyncStatusChip extends StatelessWidget {
   const SyncStatusChip({

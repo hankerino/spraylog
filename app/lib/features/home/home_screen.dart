@@ -184,7 +184,7 @@ class _StatCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(icon, color: SpraylogTheme.brandTurf),
+          Icon(icon, color: SpraylogTheme.brandNavy),
           const SizedBox(height: 8),
           Text(
             value,

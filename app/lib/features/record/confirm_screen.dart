@@ -730,7 +730,7 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
                     const Icon(
                       Icons.check_circle,
                       size: 18,
-                      color: SpraylogTheme.brandTurf,
+                      color: SpraylogTheme.brandNavy,
                     ),
                     const SizedBox(width: 6),
                     Expanded(
@@ -738,7 +738,7 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
                         'Resolved: ${_draft.brandName} · EPA ${_draft.epaRegNo}'
                         '${_draft.signalWord != null ? ' · ${_draft.signalWord}' : ''}',
                         style: const TextStyle(
-                          color: SpraylogTheme.brandTurfDark,
+                          color: SpraylogTheme.brandNavy,
                           fontSize: 13,
                         ),
                       ),
@@ -944,8 +944,8 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      SpraylogTheme.brandTurf,
-                      SpraylogTheme.brandTurfDark,
+                      SpraylogTheme.brandNavy,
+                      SpraylogTheme.brandNavyDeep,
                     ],
                   ),
                   borderRadius: BorderRadius.circular(12),

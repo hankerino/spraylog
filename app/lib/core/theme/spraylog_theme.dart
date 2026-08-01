@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
 
-/// SprayLog brand theme. Light is the default; dark is a green-charcoal
+/// SprayLog brand theme. Light is the default; dark is a navy-charcoal
 /// variant kept in sync through the shared [_build] component wiring.
 class SpraylogTheme {
   const SpraylogTheme._();
 
-  /// Primary turf green.
+  /// Primary navy blue.
+  static const brandNavy = Color(0xFF1B3A5C);
+
+  /// Deep navy — gradient stops, emphasis.
+  static const brandNavyDeep = Color(0xFF0B1F33);
+
+  /// Neutral gray for lines/borders.
+  static const brandLine = Color(0xFF9AA3AD);
+
+  /// Legacy turf greens — kept for history only, do not use in the UI.
+  @Deprecated('use brandNavy')
   static const brandTurf = Color(0xFF2E7D32);
 
-  /// Deep turf green — section headers, emphasis.
+  /// Legacy turf green — kept for history only, do not use in the UI.
+  @Deprecated('use brandNavyDeep')
   static const brandTurfDark = Color(0xFF1B5E20);
 
   /// Near-black green — primary text.
@@ -24,10 +35,10 @@ class SpraylogTheme {
   static const brandSkyDeep = Color(0xFF039BE5);
 
   static ThemeData get light {
-    final scheme = ColorScheme.fromSeed(seedColor: brandTurf).copyWith(
-      primary: brandTurf,
+    final scheme = ColorScheme.fromSeed(seedColor: brandNavy).copyWith(
+      primary: brandNavy,
       onPrimary: Colors.white,
-      primaryContainer: const Color(0xFFDCEBD8),
+      primaryContainer: const Color(0xFFDDE4EB),
       onPrimaryContainer: brandInk,
       secondary: brandInk,
       surface: brandMist,
@@ -38,13 +49,13 @@ class SpraylogTheme {
 
   static ThemeData get dark {
     final scheme = ColorScheme.fromSeed(
-      seedColor: brandTurf,
+      seedColor: brandNavy,
       brightness: Brightness.dark,
     ).copyWith(
-      primary: brandTurf,
+      primary: brandNavy,
       onPrimary: Colors.white,
-      primaryContainer: const Color(0xFF1E3D24),
-      onPrimaryContainer: const Color(0xFFDCEBD8),
+      primaryContainer: const Color(0xFF16324F),
+      onPrimaryContainer: const Color(0xFFDDE4EB),
       secondary: const Color(0xFFB9CDBB),
       surface: const Color(0xFF141A15),
       onSurface: const Color(0xFFE8EDE6),
@@ -68,7 +79,7 @@ class SpraylogTheme {
         elevation: 0,
         scrolledUnderElevation: 1,
         shape: const Border(
-          bottom: BorderSide(color: brandTurf, width: 3),
+          bottom: BorderSide(color: brandNavy, width: 3),
         ),
       ),
       cardTheme: CardThemeData(
@@ -76,7 +87,7 @@ class SpraylogTheme {
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
           borderRadius: rounded12,
-          side: BorderSide(color: scheme.outlineVariant),
+          side: BorderSide(color: brandLine.withValues(alpha: 0.6)),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -84,15 +95,22 @@ class SpraylogTheme {
         fillColor: inputFill,
         border: OutlineInputBorder(
           borderRadius: rounded12,
-          borderSide: BorderSide(color: scheme.outlineVariant),
+          borderSide: const BorderSide(color: brandLine),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: rounded12,
-          borderSide: BorderSide(color: scheme.outlineVariant),
+          borderSide: const BorderSide(color: brandLine),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: rounded12,
           borderSide: BorderSide(color: scheme.primary, width: 2),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: scheme.primary,
+          side: const BorderSide(color: brandLine),
+          shape: RoundedRectangleBorder(borderRadius: rounded12),
         ),
       ),
       filledButtonTheme: FilledButtonThemeData(

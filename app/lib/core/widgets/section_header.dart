@@ -10,7 +10,6 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
@@ -19,7 +18,7 @@ class SectionHeader extends StatelessWidget {
             width: 8,
             height: 8,
             decoration: const BoxDecoration(
-              color: SpraylogTheme.brandTurf,
+              color: SpraylogTheme.brandNavy,
               shape: BoxShape.circle,
             ),
           ),
@@ -27,8 +26,7 @@ class SectionHeader extends StatelessWidget {
           Text(
             title,
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color:
-                      dark ? SpraylogTheme.brandTurf : SpraylogTheme.brandTurfDark,
+                  color: SpraylogTheme.brandNavy,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 0.6,
                 ),
