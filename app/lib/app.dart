@@ -16,6 +16,7 @@ import '../features/onboarding/onboarding_screen.dart';
 import '../features/record/confirm_screen.dart';
 import '../features/record/record_draft.dart';
 import '../features/record/record_screen.dart';
+import '../features/settings/settings_screen.dart';
 
 class App extends ConsumerWidget {
   const App({super.key});
@@ -97,6 +98,10 @@ class App extends ConsumerWidget {
         GoRoute(
           path: '/export',
           builder: (context, state) => const ExportScreen(),
+        ),
+        GoRoute(
+          path: '/settings',
+          builder: (context, state) => const SettingsScreen(),
         ),
       ],
     );

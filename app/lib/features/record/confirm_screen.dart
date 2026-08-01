@@ -20,6 +20,7 @@ import '../../core/theme/spraylog_theme.dart';
 import '../../core/widgets/section_header.dart';
 import '../../data/models/application.dart';
 import '../../data/models/product.dart';
+import '../billing/plan_status.dart';
 import 'extraction_client.dart';
 import 'product_picker_sheet.dart';
 import 'record_draft.dart';
@@ -55,6 +56,7 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
 
   ValidationOutcome? _validation;
   bool _validating = false;
+  bool _serverPlanLapsed = false;
   final _overrideController = TextEditingController();
 
   @override
@@ -359,6 +361,10 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
     });
   }
 
+  static bool _isPlanLapsedError(String message) {
+    return message.contains('plan_lapsed');
+  }
+
   Future<void> _sign() async {
     final errors = RecordValidation.validateDraft(_draft);
     setState(() => _errors = errors);
@@ -432,7 +438,11 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
 
       final saved = await repository.save(record);
       if (saved is Failure) {
-        _showError(saved.error.message);
+        if (_isPlanLapsedError(saved.error.message)) {
+          setState(() => _serverPlanLapsed = true);
+        } else {
+          _showError(saved.error.message);
+        }
         return;
       }
 
@@ -443,7 +453,11 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
             payload: jsonEncode(record.toSnakeJson()),
           );
       if (enqueued is Failure) {
-        _showError(enqueued.error.message);
+        if (_isPlanLapsedError(enqueued.error.message)) {
+          setState(() => _serverPlanLapsed = true);
+        } else {
+          _showError(enqueued.error.message);
+        }
         return;
       }
 
@@ -466,6 +480,14 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
       ref.invalidate(applicationsProvider);
       ref.invalidate(pendingOutboxProvider);
       if (mounted) context.go('/history/${record.id}');
+    } catch (error) {
+      // The server plan trigger rejects with plan_lapsed — surface the
+      // read-only banner instead of a raw error.
+      if (_isPlanLapsedError(error.toString())) {
+        setState(() => _serverPlanLapsed = true);
+      } else {
+        _showError('Could not sign the record: $error');
+      }
     } finally {
       if (mounted) setState(() => _signing = false);
     }
@@ -673,6 +695,11 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
       rateFlag: rateFlag,
       overrideReason: _overrideController.text,
     );
+    // Lapsed plan → read-only: sign blocked client-side (the server
+    // trigger is the backstop; _serverPlanLapsed catches its rejection).
+    final planBlocked = _serverPlanLapsed ||
+        (ref.watch(planStatusProvider).valueOrNull?.isLapsed ?? false);
+    final signAllowed = canSign && !planBlocked;
     final weatherSummary = _weatherSummary();
     return Scaffold(
       appBar: AppBar(
@@ -888,6 +915,23 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
           _transcriptCard(context),
           const SizedBox(height: 20),
           const SectionHeader('Sign-off'),
+          if (planBlocked)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Card(
+                margin: EdgeInsets.zero,
+                color: SpraylogTheme.brandAmber,
+                child: const ListTile(
+                  leading: Icon(Icons.lock_outline),
+                  title: Text(
+                    'Subscription ended — records are read-only.',
+                  ),
+                  subtitle: Text(
+                    'History and export stay available forever.',
+                  ),
+                ),
+              ),
+            ),
           if (rateFlag != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
@@ -934,7 +978,7 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
             ),
           ),
           Opacity(
-            opacity: (_signing || !canSign) ? 0.7 : 1,
+            opacity: (_signing || !signAllowed) ? 0.7 : 1,
             child: SizedBox(
               width: double.infinity,
               height: 54,
@@ -954,7 +998,7 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen> {
                   type: MaterialType.transparency,
                   child: InkWell(
                     borderRadius: BorderRadius.circular(12),
-                    onTap: (_signing || !canSign) ? null : _sign,
+                    onTap: (_signing || !signAllowed) ? null : _sign,
                     child: Center(
                       child: Row(
                         mainAxisSize: MainAxisSize.min,

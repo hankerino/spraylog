@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/providers.dart';
 import '../../core/theme/spraylog_theme.dart';
 import '../../core/widgets/brand_mark.dart';
+import '../billing/plan_status.dart';
 
 /// Launchpad: record entry point, today's activity, and sync state.
 class HomeScreen extends ConsumerWidget {
@@ -15,6 +16,7 @@ class HomeScreen extends ConsumerWidget {
     final applications = ref.watch(applicationsProvider);
     final pending = ref.watch(pendingOutboxProvider);
     final online = ref.watch(connectivityProvider);
+    final plan = ref.watch(planStatusProvider).valueOrNull;
 
     final now = DateTime.now();
     final todayCount = (applications.valueOrNull ?? const []).where((record) {
@@ -108,39 +110,58 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
           const SizedBox(height: 16),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  SpraylogTheme.brandSky,
-                  SpraylogTheme.brandSkyDeep,
-                ],
+          if (plan?.isLapsed == true)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Card(
+                color: SpraylogTheme.brandAmber,
+                child: const ListTile(
+                  leading: Icon(Icons.lock_outline),
+                  title: Text('Subscription ended — records are read-only.'),
+                  subtitle: Text(
+                    'History and export stay available forever.',
+                  ),
+                ),
               ),
-              borderRadius: BorderRadius.circular(12),
             ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () => context.push('/record'),
+          Opacity(
+            opacity: plan?.isLapsed == true ? 0.5 : 1,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    SpraylogTheme.brandSky,
+                    SpraylogTheme.brandSkyDeep,
+                  ],
+                ),
                 borderRadius: BorderRadius.circular(12),
-                child: SizedBox(
-                  height: 56,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.add, color: Colors.white),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Record application',
-                        style:
-                            Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                      ),
-                    ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: plan?.isLapsed == true
+                      ? null
+                      : () => context.push('/record'),
+                  borderRadius: BorderRadius.circular(12),
+                  child: SizedBox(
+                    height: 56,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.add, color: Colors.white),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Record application',
+                          style:
+                              Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -170,6 +191,42 @@ class HomeScreen extends ConsumerWidget {
               ),
             ],
           ),
+          if (plan != null && !plan.isLapsed && plan.status.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Chip(
+                  avatar: Icon(
+                    plan.status == 'trialing'
+                        ? Icons.hourglass_top
+                        : Icons.workspace_premium,
+                    size: 18,
+                    color: plan.status == 'trialing' &&
+                            plan.daysLeftInTrial <= 3
+                        ? SpraylogTheme.brandInk
+                        : Colors.white,
+                  ),
+                  label: Text(
+                    plan.status == 'trialing'
+                        ? 'Trial: ${plan.daysLeftInTrial} days left'
+                        : plan.planDisplayName,
+                    style: TextStyle(
+                      color: plan.status == 'trialing' &&
+                              plan.daysLeftInTrial <= 3
+                          ? SpraylogTheme.brandInk
+                          : Colors.white,
+                      fontSize: 13,
+                    ),
+                  ),
+                  backgroundColor: plan.status == 'trialing' &&
+                          plan.daysLeftInTrial <= 3
+                      ? SpraylogTheme.brandAmber
+                      : SpraylogTheme.brandNavy,
+                  side: BorderSide.none,
+                ),
+              ),
+            ),
           const SizedBox(height: 24),
           ListTile(
             leading: const Icon(Icons.history),
@@ -188,6 +245,12 @@ class HomeScreen extends ConsumerWidget {
             title: const Text('State export'),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push('/export'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings_outlined),
+            title: const Text('Settings'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/settings'),
           ),
         ],
       ),
