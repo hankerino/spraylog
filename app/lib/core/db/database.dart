@@ -99,10 +99,39 @@ class Applications extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// Cached product catalogue pulled from the remote `products` table.
+/// Read-only reference data for the picker and the product matcher.
+class Products extends Table {
+  TextColumn get id => text()();
+
+  TextColumn get epaRegNo => text()();
+
+  TextColumn get brandName => text()();
+
+  /// JSON-encoded list of spoken/brand aliases.
+  TextColumn get brandAliases => text()();
+
+  TextColumn get signalWord => text().nullable()();
+
+  TextColumn get formulation => text().nullable()();
+
+  RealColumn get reiHours => real().nullable()();
+
+  BoolColumn get restrictedUse => boolean().withDefault(
+        const Constant(false),
+      )();
+
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 @DriftDatabase(
   tables: [
     OutboxItems,
     Applications,
+    Products,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -112,7 +141,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -136,6 +165,9 @@ class AppDatabase extends _$AppDatabase {
             await m.addColumn(applications, applications.extractionConfidence);
             await m.addColumn(applications, applications.rateFlag);
             await m.addColumn(applications, applications.overrideReason);
+          }
+          if (from < 3) {
+            await migrator.createTable(products);
           }
         },
       );

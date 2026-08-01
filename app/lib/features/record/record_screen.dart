@@ -5,6 +5,7 @@ import 'package:speech_to_text/speech_recognition_error.dart' as stt;
 import 'package:speech_to_text/speech_recognition_result.dart' as stt;
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
+import '../../core/theme/spraylog_theme.dart';
 import '../../core/widgets/section_header.dart';
 import 'record_draft.dart';
 
@@ -417,10 +418,7 @@ class _RecordScreenState extends State<RecordScreen> {
         !_listening && _transcript == null && error == null;
     return Card(
       margin: EdgeInsets.zero,
-      color: Theme.of(context)
-          .colorScheme
-          .primaryContainer
-          .withValues(alpha: 0.4),
+      color: SpraylogTheme.brandSkySoft.withValues(alpha: 0.5),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(

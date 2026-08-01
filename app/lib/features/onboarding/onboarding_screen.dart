@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/providers.dart';
-import '../../core/theme/spraylog_theme.dart';
+import '../../core/widgets/brand_mark.dart';
 
 /// Company setup: first company + owner profile via the
 /// create_company_and_profile RPC (spec §4, /onboarding).
@@ -91,11 +91,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             shrinkWrap: true,
             padding: const EdgeInsets.all(24),
             children: [
-              const Icon(
-                Icons.spa,
-                size: 36,
-                color: SpraylogTheme.brandTurf,
-              ),
+              const BrandMark(size: 44),
               const SizedBox(height: 8),
               Text(
                 'SprayLog',

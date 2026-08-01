@@ -20,7 +20,7 @@ class SyncStatusChip extends StatelessWidget {
     final (label, background, foreground) = switch ((signed, pending)) {
       (false, _) => ('unsigned', scheme.errorContainer, scheme.onErrorContainer),
       (true, true) => ('pending', SpraylogTheme.brandAmber, SpraylogTheme.brandInk),
-      (true, false) => ('synced', SpraylogTheme.brandTurf, Colors.white),
+      (true, false) => ('synced', SpraylogTheme.brandSky, SpraylogTheme.brandInk),
     };
     return Chip(
       label: Text(

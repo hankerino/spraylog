@@ -67,4 +67,41 @@ void main() {
       containsAll(['brandName', 'rateValue', 'areaValue', 'state']),
     );
   });
+
+  test('canSign gates signing on the override reason when flagged', () {
+    // No flag: always signable.
+    expect(
+      RecordValidation.canSign(rateFlag: null, overrideReason: ''),
+      isTrue,
+    );
+
+    // Flagged + empty/blank reason: blocked.
+    expect(
+      RecordValidation.canSign(rateFlag: 'over_label', overrideReason: ''),
+      isFalse,
+    );
+    expect(
+      RecordValidation.canSign(
+        rateFlag: 'unregistered_in_state',
+        overrideReason: '   ',
+      ),
+      isFalse,
+    );
+
+    // Flagged + reason typed: allowed.
+    expect(
+      RecordValidation.canSign(
+        rateFlag: 'over_label',
+        overrideReason: 'customer request, spot treatment only',
+      ),
+      isTrue,
+    );
+    expect(
+      RecordValidation.canSign(
+        rateFlag: 'unregistered_in_state',
+        overrideReason: 'applied in FL where registered',
+      ),
+      isTrue,
+    );
+  });
 }

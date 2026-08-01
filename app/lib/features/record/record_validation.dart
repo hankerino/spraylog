@@ -36,4 +36,15 @@ class RecordValidation {
       if (state(draft.state) case final error?) 'state': error,
     };
   }
+
+  /// Sign gate for validation rate flags: when the edge function flagged
+  /// the record ('over_label' / 'unregistered_in_state'), signing is
+  /// blocked until the user types an override reason.
+  static bool canSign({
+    String? rateFlag,
+    required String overrideReason,
+  }) {
+    if (rateFlag == null) return true;
+    return overrideReason.trim().isNotEmpty;
+  }
 }

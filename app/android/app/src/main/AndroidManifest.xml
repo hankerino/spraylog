@@ -2,6 +2,9 @@
     <!-- Voice capture for the record flow (speech_to_text does not
          declare this itself in 7.x). -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <!-- GPS autofill on the confirm screen (geolocator). -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <application
         android:label="spraylog"
         android:name="${applicationName}"

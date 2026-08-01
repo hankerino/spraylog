@@ -2211,11 +2211,594 @@ class ApplicationsCompanion extends UpdateCompanion<Application> {
   }
 }
 
+class $ProductsTable extends Products with TableInfo<$ProductsTable, Product> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProductsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _epaRegNoMeta = const VerificationMeta(
+    'epaRegNo',
+  );
+  @override
+  late final GeneratedColumn<String> epaRegNo = GeneratedColumn<String>(
+    'epa_reg_no',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _brandNameMeta = const VerificationMeta(
+    'brandName',
+  );
+  @override
+  late final GeneratedColumn<String> brandName = GeneratedColumn<String>(
+    'brand_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _brandAliasesMeta = const VerificationMeta(
+    'brandAliases',
+  );
+  @override
+  late final GeneratedColumn<String> brandAliases = GeneratedColumn<String>(
+    'brand_aliases',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _signalWordMeta = const VerificationMeta(
+    'signalWord',
+  );
+  @override
+  late final GeneratedColumn<String> signalWord = GeneratedColumn<String>(
+    'signal_word',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _formulationMeta = const VerificationMeta(
+    'formulation',
+  );
+  @override
+  late final GeneratedColumn<String> formulation = GeneratedColumn<String>(
+    'formulation',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _reiHoursMeta = const VerificationMeta(
+    'reiHours',
+  );
+  @override
+  late final GeneratedColumn<double> reiHours = GeneratedColumn<double>(
+    'rei_hours',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _restrictedUseMeta = const VerificationMeta(
+    'restrictedUse',
+  );
+  @override
+  late final GeneratedColumn<bool> restrictedUse = GeneratedColumn<bool>(
+    'restricted_use',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("restricted_use" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    epaRegNo,
+    brandName,
+    brandAliases,
+    signalWord,
+    formulation,
+    reiHours,
+    restrictedUse,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'products';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Product> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('epa_reg_no')) {
+      context.handle(
+        _epaRegNoMeta,
+        epaRegNo.isAcceptableOrUnknown(data['epa_reg_no']!, _epaRegNoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_epaRegNoMeta);
+    }
+    if (data.containsKey('brand_name')) {
+      context.handle(
+        _brandNameMeta,
+        brandName.isAcceptableOrUnknown(data['brand_name']!, _brandNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_brandNameMeta);
+    }
+    if (data.containsKey('brand_aliases')) {
+      context.handle(
+        _brandAliasesMeta,
+        brandAliases.isAcceptableOrUnknown(
+          data['brand_aliases']!,
+          _brandAliasesMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_brandAliasesMeta);
+    }
+    if (data.containsKey('signal_word')) {
+      context.handle(
+        _signalWordMeta,
+        signalWord.isAcceptableOrUnknown(data['signal_word']!, _signalWordMeta),
+      );
+    }
+    if (data.containsKey('formulation')) {
+      context.handle(
+        _formulationMeta,
+        formulation.isAcceptableOrUnknown(
+          data['formulation']!,
+          _formulationMeta,
+        ),
+      );
+    }
+    if (data.containsKey('rei_hours')) {
+      context.handle(
+        _reiHoursMeta,
+        reiHours.isAcceptableOrUnknown(data['rei_hours']!, _reiHoursMeta),
+      );
+    }
+    if (data.containsKey('restricted_use')) {
+      context.handle(
+        _restrictedUseMeta,
+        restrictedUse.isAcceptableOrUnknown(
+          data['restricted_use']!,
+          _restrictedUseMeta,
+        ),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Product map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Product(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      epaRegNo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}epa_reg_no'],
+      )!,
+      brandName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}brand_name'],
+      )!,
+      brandAliases: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}brand_aliases'],
+      )!,
+      signalWord: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}signal_word'],
+      ),
+      formulation: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}formulation'],
+      ),
+      reiHours: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}rei_hours'],
+      ),
+      restrictedUse: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}restricted_use'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ProductsTable createAlias(String alias) {
+    return $ProductsTable(attachedDatabase, alias);
+  }
+}
+
+class Product extends DataClass implements Insertable<Product> {
+  final String id;
+  final String epaRegNo;
+  final String brandName;
+
+  /// JSON-encoded list of spoken/brand aliases.
+  final String brandAliases;
+  final String? signalWord;
+  final String? formulation;
+  final double? reiHours;
+  final bool restrictedUse;
+  final DateTime updatedAt;
+  const Product({
+    required this.id,
+    required this.epaRegNo,
+    required this.brandName,
+    required this.brandAliases,
+    this.signalWord,
+    this.formulation,
+    this.reiHours,
+    required this.restrictedUse,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['epa_reg_no'] = Variable<String>(epaRegNo);
+    map['brand_name'] = Variable<String>(brandName);
+    map['brand_aliases'] = Variable<String>(brandAliases);
+    if (!nullToAbsent || signalWord != null) {
+      map['signal_word'] = Variable<String>(signalWord);
+    }
+    if (!nullToAbsent || formulation != null) {
+      map['formulation'] = Variable<String>(formulation);
+    }
+    if (!nullToAbsent || reiHours != null) {
+      map['rei_hours'] = Variable<double>(reiHours);
+    }
+    map['restricted_use'] = Variable<bool>(restrictedUse);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  ProductsCompanion toCompanion(bool nullToAbsent) {
+    return ProductsCompanion(
+      id: Value(id),
+      epaRegNo: Value(epaRegNo),
+      brandName: Value(brandName),
+      brandAliases: Value(brandAliases),
+      signalWord: signalWord == null && nullToAbsent
+          ? const Value.absent()
+          : Value(signalWord),
+      formulation: formulation == null && nullToAbsent
+          ? const Value.absent()
+          : Value(formulation),
+      reiHours: reiHours == null && nullToAbsent
+          ? const Value.absent()
+          : Value(reiHours),
+      restrictedUse: Value(restrictedUse),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory Product.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Product(
+      id: serializer.fromJson<String>(json['id']),
+      epaRegNo: serializer.fromJson<String>(json['epaRegNo']),
+      brandName: serializer.fromJson<String>(json['brandName']),
+      brandAliases: serializer.fromJson<String>(json['brandAliases']),
+      signalWord: serializer.fromJson<String?>(json['signalWord']),
+      formulation: serializer.fromJson<String?>(json['formulation']),
+      reiHours: serializer.fromJson<double?>(json['reiHours']),
+      restrictedUse: serializer.fromJson<bool>(json['restrictedUse']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'epaRegNo': serializer.toJson<String>(epaRegNo),
+      'brandName': serializer.toJson<String>(brandName),
+      'brandAliases': serializer.toJson<String>(brandAliases),
+      'signalWord': serializer.toJson<String?>(signalWord),
+      'formulation': serializer.toJson<String?>(formulation),
+      'reiHours': serializer.toJson<double?>(reiHours),
+      'restrictedUse': serializer.toJson<bool>(restrictedUse),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  Product copyWith({
+    String? id,
+    String? epaRegNo,
+    String? brandName,
+    String? brandAliases,
+    Value<String?> signalWord = const Value.absent(),
+    Value<String?> formulation = const Value.absent(),
+    Value<double?> reiHours = const Value.absent(),
+    bool? restrictedUse,
+    DateTime? updatedAt,
+  }) => Product(
+    id: id ?? this.id,
+    epaRegNo: epaRegNo ?? this.epaRegNo,
+    brandName: brandName ?? this.brandName,
+    brandAliases: brandAliases ?? this.brandAliases,
+    signalWord: signalWord.present ? signalWord.value : this.signalWord,
+    formulation: formulation.present ? formulation.value : this.formulation,
+    reiHours: reiHours.present ? reiHours.value : this.reiHours,
+    restrictedUse: restrictedUse ?? this.restrictedUse,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  Product copyWithCompanion(ProductsCompanion data) {
+    return Product(
+      id: data.id.present ? data.id.value : this.id,
+      epaRegNo: data.epaRegNo.present ? data.epaRegNo.value : this.epaRegNo,
+      brandName: data.brandName.present ? data.brandName.value : this.brandName,
+      brandAliases: data.brandAliases.present
+          ? data.brandAliases.value
+          : this.brandAliases,
+      signalWord: data.signalWord.present
+          ? data.signalWord.value
+          : this.signalWord,
+      formulation: data.formulation.present
+          ? data.formulation.value
+          : this.formulation,
+      reiHours: data.reiHours.present ? data.reiHours.value : this.reiHours,
+      restrictedUse: data.restrictedUse.present
+          ? data.restrictedUse.value
+          : this.restrictedUse,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Product(')
+          ..write('id: $id, ')
+          ..write('epaRegNo: $epaRegNo, ')
+          ..write('brandName: $brandName, ')
+          ..write('brandAliases: $brandAliases, ')
+          ..write('signalWord: $signalWord, ')
+          ..write('formulation: $formulation, ')
+          ..write('reiHours: $reiHours, ')
+          ..write('restrictedUse: $restrictedUse, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    epaRegNo,
+    brandName,
+    brandAliases,
+    signalWord,
+    formulation,
+    reiHours,
+    restrictedUse,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Product &&
+          other.id == this.id &&
+          other.epaRegNo == this.epaRegNo &&
+          other.brandName == this.brandName &&
+          other.brandAliases == this.brandAliases &&
+          other.signalWord == this.signalWord &&
+          other.formulation == this.formulation &&
+          other.reiHours == this.reiHours &&
+          other.restrictedUse == this.restrictedUse &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ProductsCompanion extends UpdateCompanion<Product> {
+  final Value<String> id;
+  final Value<String> epaRegNo;
+  final Value<String> brandName;
+  final Value<String> brandAliases;
+  final Value<String?> signalWord;
+  final Value<String?> formulation;
+  final Value<double?> reiHours;
+  final Value<bool> restrictedUse;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const ProductsCompanion({
+    this.id = const Value.absent(),
+    this.epaRegNo = const Value.absent(),
+    this.brandName = const Value.absent(),
+    this.brandAliases = const Value.absent(),
+    this.signalWord = const Value.absent(),
+    this.formulation = const Value.absent(),
+    this.reiHours = const Value.absent(),
+    this.restrictedUse = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProductsCompanion.insert({
+    required String id,
+    required String epaRegNo,
+    required String brandName,
+    required String brandAliases,
+    this.signalWord = const Value.absent(),
+    this.formulation = const Value.absent(),
+    this.reiHours = const Value.absent(),
+    this.restrictedUse = const Value.absent(),
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       epaRegNo = Value(epaRegNo),
+       brandName = Value(brandName),
+       brandAliases = Value(brandAliases),
+       updatedAt = Value(updatedAt);
+  static Insertable<Product> custom({
+    Expression<String>? id,
+    Expression<String>? epaRegNo,
+    Expression<String>? brandName,
+    Expression<String>? brandAliases,
+    Expression<String>? signalWord,
+    Expression<String>? formulation,
+    Expression<double>? reiHours,
+    Expression<bool>? restrictedUse,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (epaRegNo != null) 'epa_reg_no': epaRegNo,
+      if (brandName != null) 'brand_name': brandName,
+      if (brandAliases != null) 'brand_aliases': brandAliases,
+      if (signalWord != null) 'signal_word': signalWord,
+      if (formulation != null) 'formulation': formulation,
+      if (reiHours != null) 'rei_hours': reiHours,
+      if (restrictedUse != null) 'restricted_use': restrictedUse,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProductsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? epaRegNo,
+    Value<String>? brandName,
+    Value<String>? brandAliases,
+    Value<String?>? signalWord,
+    Value<String?>? formulation,
+    Value<double?>? reiHours,
+    Value<bool>? restrictedUse,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return ProductsCompanion(
+      id: id ?? this.id,
+      epaRegNo: epaRegNo ?? this.epaRegNo,
+      brandName: brandName ?? this.brandName,
+      brandAliases: brandAliases ?? this.brandAliases,
+      signalWord: signalWord ?? this.signalWord,
+      formulation: formulation ?? this.formulation,
+      reiHours: reiHours ?? this.reiHours,
+      restrictedUse: restrictedUse ?? this.restrictedUse,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (epaRegNo.present) {
+      map['epa_reg_no'] = Variable<String>(epaRegNo.value);
+    }
+    if (brandName.present) {
+      map['brand_name'] = Variable<String>(brandName.value);
+    }
+    if (brandAliases.present) {
+      map['brand_aliases'] = Variable<String>(brandAliases.value);
+    }
+    if (signalWord.present) {
+      map['signal_word'] = Variable<String>(signalWord.value);
+    }
+    if (formulation.present) {
+      map['formulation'] = Variable<String>(formulation.value);
+    }
+    if (reiHours.present) {
+      map['rei_hours'] = Variable<double>(reiHours.value);
+    }
+    if (restrictedUse.present) {
+      map['restricted_use'] = Variable<bool>(restrictedUse.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProductsCompanion(')
+          ..write('id: $id, ')
+          ..write('epaRegNo: $epaRegNo, ')
+          ..write('brandName: $brandName, ')
+          ..write('brandAliases: $brandAliases, ')
+          ..write('signalWord: $signalWord, ')
+          ..write('formulation: $formulation, ')
+          ..write('reiHours: $reiHours, ')
+          ..write('restrictedUse: $restrictedUse, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $OutboxItemsTable outboxItems = $OutboxItemsTable(this);
   late final $ApplicationsTable applications = $ApplicationsTable(this);
+  late final $ProductsTable products = $ProductsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2223,6 +2806,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     outboxItems,
     applications,
+    products,
   ];
 }
 
@@ -3205,6 +3789,284 @@ typedef $$ApplicationsTableProcessedTableManager =
       Application,
       PrefetchHooks Function()
     >;
+typedef $$ProductsTableCreateCompanionBuilder =
+    ProductsCompanion Function({
+      required String id,
+      required String epaRegNo,
+      required String brandName,
+      required String brandAliases,
+      Value<String?> signalWord,
+      Value<String?> formulation,
+      Value<double?> reiHours,
+      Value<bool> restrictedUse,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$ProductsTableUpdateCompanionBuilder =
+    ProductsCompanion Function({
+      Value<String> id,
+      Value<String> epaRegNo,
+      Value<String> brandName,
+      Value<String> brandAliases,
+      Value<String?> signalWord,
+      Value<String?> formulation,
+      Value<double?> reiHours,
+      Value<bool> restrictedUse,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$ProductsTableFilterComposer
+    extends Composer<_$AppDatabase, $ProductsTable> {
+  $$ProductsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get epaRegNo => $composableBuilder(
+    column: $table.epaRegNo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get brandName => $composableBuilder(
+    column: $table.brandName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get brandAliases => $composableBuilder(
+    column: $table.brandAliases,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get signalWord => $composableBuilder(
+    column: $table.signalWord,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get formulation => $composableBuilder(
+    column: $table.formulation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get reiHours => $composableBuilder(
+    column: $table.reiHours,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get restrictedUse => $composableBuilder(
+    column: $table.restrictedUse,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProductsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProductsTable> {
+  $$ProductsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get epaRegNo => $composableBuilder(
+    column: $table.epaRegNo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get brandName => $composableBuilder(
+    column: $table.brandName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get brandAliases => $composableBuilder(
+    column: $table.brandAliases,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get signalWord => $composableBuilder(
+    column: $table.signalWord,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get formulation => $composableBuilder(
+    column: $table.formulation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get reiHours => $composableBuilder(
+    column: $table.reiHours,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get restrictedUse => $composableBuilder(
+    column: $table.restrictedUse,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProductsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProductsTable> {
+  $$ProductsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get epaRegNo =>
+      $composableBuilder(column: $table.epaRegNo, builder: (column) => column);
+
+  GeneratedColumn<String> get brandName =>
+      $composableBuilder(column: $table.brandName, builder: (column) => column);
+
+  GeneratedColumn<String> get brandAliases => $composableBuilder(
+    column: $table.brandAliases,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get signalWord => $composableBuilder(
+    column: $table.signalWord,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get formulation => $composableBuilder(
+    column: $table.formulation,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get reiHours =>
+      $composableBuilder(column: $table.reiHours, builder: (column) => column);
+
+  GeneratedColumn<bool> get restrictedUse => $composableBuilder(
+    column: $table.restrictedUse,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$ProductsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProductsTable,
+          Product,
+          $$ProductsTableFilterComposer,
+          $$ProductsTableOrderingComposer,
+          $$ProductsTableAnnotationComposer,
+          $$ProductsTableCreateCompanionBuilder,
+          $$ProductsTableUpdateCompanionBuilder,
+          (Product, BaseReferences<_$AppDatabase, $ProductsTable, Product>),
+          Product,
+          PrefetchHooks Function()
+        > {
+  $$ProductsTableTableManager(_$AppDatabase db, $ProductsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProductsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProductsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ProductsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> epaRegNo = const Value.absent(),
+                Value<String> brandName = const Value.absent(),
+                Value<String> brandAliases = const Value.absent(),
+                Value<String?> signalWord = const Value.absent(),
+                Value<String?> formulation = const Value.absent(),
+                Value<double?> reiHours = const Value.absent(),
+                Value<bool> restrictedUse = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProductsCompanion(
+                id: id,
+                epaRegNo: epaRegNo,
+                brandName: brandName,
+                brandAliases: brandAliases,
+                signalWord: signalWord,
+                formulation: formulation,
+                reiHours: reiHours,
+                restrictedUse: restrictedUse,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String epaRegNo,
+                required String brandName,
+                required String brandAliases,
+                Value<String?> signalWord = const Value.absent(),
+                Value<String?> formulation = const Value.absent(),
+                Value<double?> reiHours = const Value.absent(),
+                Value<bool> restrictedUse = const Value.absent(),
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => ProductsCompanion.insert(
+                id: id,
+                epaRegNo: epaRegNo,
+                brandName: brandName,
+                brandAliases: brandAliases,
+                signalWord: signalWord,
+                formulation: formulation,
+                reiHours: reiHours,
+                restrictedUse: restrictedUse,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProductsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProductsTable,
+      Product,
+      $$ProductsTableFilterComposer,
+      $$ProductsTableOrderingComposer,
+      $$ProductsTableAnnotationComposer,
+      $$ProductsTableCreateCompanionBuilder,
+      $$ProductsTableUpdateCompanionBuilder,
+      (Product, BaseReferences<_$AppDatabase, $ProductsTable, Product>),
+      Product,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -3213,4 +4075,6 @@ class $AppDatabaseManager {
       $$OutboxItemsTableTableManager(_db, _db.outboxItems);
   $$ApplicationsTableTableManager get applications =>
       $$ApplicationsTableTableManager(_db, _db.applications);
+  $$ProductsTableTableManager get products =>
+      $$ProductsTableTableManager(_db, _db.products);
 }

@@ -11,6 +11,7 @@ import 'result.dart';
 import 'sync/outbox_service.dart';
 import '../../data/repositories/application_repository.dart';
 import '../../data/repositories/outbox_repository.dart';
+import '../../data/repositories/products_repository.dart';
 
 /// Supabase client singleton (initialized in main.dart before runApp).
 final supabaseClientProvider = Provider<SupabaseClient>(
@@ -38,6 +39,10 @@ final outboxServiceProvider = Provider<OutboxService>(
     ref.watch(outboxRepositoryProvider),
     ref.watch(supabaseClientProvider),
   ),
+);
+
+final productsRepositoryProvider = Provider<ProductsRepository>(
+  (ref) => ProductsRepository(ref.watch(appDatabaseProvider)),
 );
 
 /// Live auth state driven by the Supabase session stream.

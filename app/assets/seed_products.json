@@ -1,0 +1,35 @@
+[
+  {
+    "id": "9f1c2a34-5b6d-4e7f-8a9b-0c1d2e3f4a01",
+    "epa_reg_no": "62719-542",
+    "brand_name": "Dimension 2EW",
+    "brand_aliases": ["dimension", "dimension two e w", "dimension 2 e w", "dithiopyr"],
+    "signal_word": "Caution",
+    "formulation": "liquid",
+    "rei_hours": 12,
+    "restricted_use": false,
+    "updated_at": "2026-01-01T00:00:00Z"
+  },
+  {
+    "id": "9f1c2a34-5b6d-4e7f-8a9b-0c1d2e3f4a02",
+    "epa_reg_no": "279-3206",
+    "brand_name": "Talstar P",
+    "brand_aliases": ["talstar", "talstar professional", "bifenthrin"],
+    "signal_word": "Caution",
+    "formulation": "liquid",
+    "rei_hours": 12,
+    "restricted_use": false,
+    "updated_at": "2026-01-01T00:00:00Z"
+  },
+  {
+    "id": "9f1c2a34-5b6d-4e7f-8a9b-0c1d2e3f4a03",
+    "epa_reg_no": "432-1363",
+    "brand_name": "Tempo SC Ultra",
+    "brand_aliases": ["tempo", "tempo s c", "tempo ultra", "cyfluthrin"],
+    "signal_word": "Caution",
+    "formulation": "liquid",
+    "rei_hours": 12,
+    "restricted_use": false,
+    "updated_at": "2026-01-01T00:00:00Z"
+  }
+]

@@ -19,6 +19,8 @@ class SpraylogTheme {
 
   /// Warnings / flags only.
   static const brandAmber = Color(0xFFF9A825);
+  static const brandSky = Color(0xFF4FC3F7);
+  static const brandSkySoft = Color(0xFFE1F5FE);
 
   static ThemeData get light {
     final scheme = ColorScheme.fromSeed(seedColor: brandTurf).copyWith(

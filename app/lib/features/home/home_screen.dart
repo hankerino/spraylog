@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/providers.dart';
 import '../../core/theme/spraylog_theme.dart';
+import '../../core/widgets/brand_mark.dart';
 
 /// Launchpad: record entry point, today's activity, and sync state.
 class HomeScreen extends ConsumerWidget {
@@ -49,16 +50,21 @@ class HomeScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.spa, size: 36, color: Colors.white),
-                const SizedBox(height: 8),
-                Text(
-                  'SprayLog',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                      ),
+                Row(
+                  children: [
+                    const BrandMark(size: 44),
+                    const SizedBox(width: 12),
+                    Text(
+                      'SprayLog',
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w800,
+                              ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 6),
                 Text(
                   'Voice-first application records',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -149,7 +155,7 @@ class _StatCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primaryContainer,
+        color: SpraylogTheme.brandSkySoft,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/providers.dart';
+import '../core/sync/catalogue_sync.dart';
 import '../core/theme/spraylog_theme.dart';
 import '../features/auth/auth_screen.dart';
 import '../features/auth/auth_state.dart';
@@ -25,6 +26,7 @@ class App extends ConsumerWidget {
     final profileAsync = ref.watch(currentProfileProvider);
     // Activate the outbox startup drain + reconnect listener.
     ref.watch(outboxReconnectSyncProvider);
+    ref.watch(catalogueSyncProvider);
 
     final router = GoRouter(
       initialLocation: '/',
