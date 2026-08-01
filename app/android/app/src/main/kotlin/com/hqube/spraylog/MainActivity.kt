@@ -1,4 +1,4 @@
-package com.example.spraylog
+package com.hqube.spraylog
 
 import io.flutter.embedding.android.FlutterActivity
 

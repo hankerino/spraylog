@@ -15,3 +15,7 @@ supabase/.temp/
 **/*.key
 **/*.pem
 Thumbs.db
+
+# Upload signing material (never commit)
+*.jks
+key.properties
