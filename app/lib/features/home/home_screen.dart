@@ -30,7 +30,7 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SprayLog'),
+        title: const Text('SprayLOG'),
         actions: [
           IconButton(
             tooltip: 'Toggle dark mode',
@@ -77,7 +77,7 @@ class HomeScreen extends ConsumerWidget {
                     const BrandMark(size: 44),
                     const SizedBox(width: 12),
                     Text(
-                      'SprayLog',
+                      'SprayLOG',
                       style:
                           Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,

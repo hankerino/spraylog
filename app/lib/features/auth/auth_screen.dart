@@ -98,7 +98,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
               children: [
                 const BrandMark(size: 44),
                 const SizedBox(height: 8),
-                Text('SprayLog',
+                Text('SprayLOG',
                     style: Theme.of(context)
                         .textTheme
                         .headlineLarge

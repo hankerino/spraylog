@@ -107,7 +107,7 @@ class App extends ConsumerWidget {
     );
 
     return MaterialApp.router(
-      title: 'SprayLog',
+      title: 'SprayLOG',
       debugShowCheckedModeBanner: false,
       theme: SpraylogTheme.light,
       darkTheme: SpraylogTheme.dark,

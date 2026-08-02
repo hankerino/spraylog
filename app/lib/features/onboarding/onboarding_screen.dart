@@ -94,7 +94,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               const BrandMark(size: 44),
               const SizedBox(height: 8),
               Text(
-                'SprayLog',
+                'SprayLOG',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.w800,
