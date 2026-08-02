@@ -140,6 +140,10 @@ class _CustomersScreenState extends ConsumerState<CustomersScreen> {
                                         customer.email!,
                                       if (customer.notifyVia != 'none')
                                         'notify: ${customer.notifyVia}',
+                                      if (customer.smsCarrier != null)
+                                        smsCarrierLabels[
+                                                customer.smsCarrier] ??
+                                            customer.smsCarrier!,
                                     ].join(' · '),
                                   ),
                                   children: [
@@ -239,8 +243,12 @@ class _CustomerFormState extends ConsumerState<_CustomerForm> {
   final _phone = TextEditingController();
   final _email = TextEditingController();
   String _notifyVia = 'none';
+  String? _smsCarrier;
   bool _busy = false;
   String? _error;
+
+  bool get _carrierVisible =>
+      _notifyVia == 'sms' || _phone.text.trim().isNotEmpty;
 
   @override
   void dispose() {
@@ -255,6 +263,10 @@ class _CustomerFormState extends ConsumerState<_CustomerForm> {
       setState(() => _error = 'Name is required');
       return;
     }
+    if (_notifyVia == 'sms' && _smsCarrier == null) {
+      setState(() => _error = 'Carrier is required for SMS notices');
+      return;
+    }
     setState(() {
       _busy = true;
       _error = null;
@@ -265,6 +277,7 @@ class _CustomerFormState extends ConsumerState<_CustomerForm> {
           phone: _phone.text,
           email: _email.text,
           notifyVia: _notifyVia,
+          smsCarrier: _smsCarrier,
         );
     if (!mounted) return;
     switch (result) {
@@ -302,6 +315,7 @@ class _CustomerFormState extends ConsumerState<_CustomerForm> {
               controller: _phone,
               decoration: const InputDecoration(labelText: 'Phone'),
               keyboardType: TextInputType.phone,
+              onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: 12),
             TextField(
@@ -322,6 +336,25 @@ class _CustomerFormState extends ConsumerState<_CustomerForm> {
                 if (value != null) setState(() => _notifyVia = value);
               },
             ),
+            if (_carrierVisible) ...[
+              const SizedBox(height: 12),
+              DropdownButtonFormField<String>(
+                initialValue: _smsCarrier,
+                isExpanded: true,
+                decoration: const InputDecoration(
+                  labelText: 'Mobile carrier (for SMS notices)',
+                  hintText: 'Needed for free SMS delivery',
+                ),
+                items: [
+                  for (final entry in smsCarrierLabels.entries)
+                    DropdownMenuItem(
+                      value: entry.key,
+                      child: Text(entry.value),
+                    ),
+                ],
+                onChanged: (value) => setState(() => _smsCarrier = value),
+              ),
+            ],
             if (_error != null) ...[
               const SizedBox(height: 12),
               Text(_error!,

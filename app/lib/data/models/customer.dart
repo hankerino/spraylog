@@ -8,6 +8,7 @@ class CustomerModel {
     this.phone,
     this.email,
     this.notifyVia = 'none',
+    this.smsCarrier,
   });
 
   final String id;
@@ -18,6 +19,9 @@ class CustomerModel {
   /// sms | email | none
   final String notifyVia;
 
+  /// Email-to-SMS gateway carrier key (see [smsCarrierLabels]); nullable.
+  final String? smsCarrier;
+
   factory CustomerModel.fromSnakeJson(Map<String, dynamic> json) {
     return CustomerModel(
       id: json['id'] as String,
@@ -25,6 +29,19 @@ class CustomerModel {
       phone: json['phone'] as String?,
       email: json['email'] as String?,
       notifyVia: json['notify_via'] as String? ?? 'none',
+      smsCarrier: json['sms_carrier'] as String?,
     );
   }
 }
+
+/// Email-to-SMS gateway carriers accepted by send-notice: value → label.
+const smsCarrierLabels = {
+  'verizon': 'Verizon',
+  'att': 'AT&T',
+  'tmobile': 'T-Mobile',
+  'sprint': 'Sprint',
+  'uscellular': 'US Cellular',
+  'cricket': 'Cricket',
+  'boost': 'Boost Mobile',
+  'metro': 'Metro by T-Mobile',
+};

@@ -51,6 +51,7 @@ class CustomersRepository {
     String? phone,
     String? email,
     String notifyVia = 'none',
+    String? smsCarrier,
   }) async {
     try {
       final row = await _supabase
@@ -63,6 +64,8 @@ class CustomersRepository {
             if (email != null && email.trim().isNotEmpty)
               'email': email.trim(),
             'notify_via': notifyVia,
+            if (smsCarrier != null && smsCarrier.isNotEmpty)
+              'sms_carrier': smsCarrier,
           })
           .select()
           .single();
