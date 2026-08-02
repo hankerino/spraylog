@@ -18,6 +18,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
   final _stateController = TextEditingController();
   DateTime? _start;
   DateTime? _end;
+  String _format = 'csv';
   bool _busy = false;
   String? _error;
   int? _rowCount;
@@ -64,7 +65,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
           'state': state,
           'range_start': DateFormat('yyyy-MM-dd').format(_start!),
           'range_end': DateFormat('yyyy-MM-dd').format(_end!),
-          'format': 'csv',
+          'format': _format,
         },
       );
       if (!mounted) return;
@@ -141,17 +142,15 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
-            initialValue: 'csv',
+            initialValue: _format,
             decoration: const InputDecoration(labelText: 'Format'),
             items: const [
               DropdownMenuItem(value: 'csv', child: Text('CSV')),
-              DropdownMenuItem(
-                value: 'pdf',
-                enabled: false,
-                child: Text('PDF — coming soon'),
-              ),
+              DropdownMenuItem(value: 'pdf', child: Text('PDF')),
             ],
-            onChanged: (_) {},
+            onChanged: (v) {
+              if (v != null) setState(() => _format = v);
+            },
           ),
           if (_error != null) ...[
             const SizedBox(height: 12),
