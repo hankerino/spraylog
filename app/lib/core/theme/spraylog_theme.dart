@@ -59,7 +59,7 @@ class SpraylogTheme {
       onPrimaryContainer: const Color(0xFFDDE4EB),
       secondary: brandSky,
       onSecondary: Colors.black,
-      surface: Colors.black,
+      surface: const Color(0xFF0D1117), // very dark gray (user direction)
       onSurface: const Color(0xFFEAEFF4),
       surfaceContainerHighest: const Color(0xFF161B20),
     );
