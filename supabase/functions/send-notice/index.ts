@@ -68,19 +68,52 @@ Deno.serve(async (req) => {
       .maybeSingle();
     if (!profile) return jsonResponse({ error: "No company profile" }, 403);
 
-    const { application_id, channel, destination } = await req.json();
+    const body_in = await req.json();
+    const { application_id, channel, destination, carrier } = body_in;
     if (!application_id || !channel || !destination) {
       return jsonResponse(
         { error: "application_id, channel, destination required" },
         400,
       );
     }
-    if (channel !== "email") {
-      // Twilio is deliberately last per user direction.
-      return jsonResponse(
-        { error: "Only email notices are supported at this time" },
-        400,
-      );
+
+    // SMS goes out free via carrier email-to-SMS gateways through Resend —
+    // no Twilio needed (user direction 2026-08-02).
+    const SMS_GATEWAYS: Record<string, string> = {
+      verizon: "vtext.com",
+      att: "txt.att.net",
+      tmobile: "tmomail.net",
+      sprint: "messaging.sprintpcs.com",
+      uscellular: "email.uscc.net",
+      cricket: "sms.cricketwireless.net",
+      boost: "sms.myboostmobile.com",
+      metro: "mymetropcs.com",
+    };
+
+    let toAddress = String(destination);
+    let provider = "resend";
+    if (channel === "sms") {
+      const gateway = SMS_GATEWAYS[String(carrier ?? "")];
+      if (!gateway) {
+        return jsonResponse(
+          { error: `Unknown carrier '${carrier}' for email-to-SMS` },
+          400,
+        );
+      }
+      let digits = String(destination).replace(/\D/g, "");
+      if (digits.length === 11 && digits.startsWith("1")) {
+        digits = digits.slice(1);
+      }
+      if (digits.length !== 10) {
+        return jsonResponse(
+          { error: "SMS destination must be a 10-digit US number" },
+          400,
+        );
+      }
+      toAddress = `${digits}@${gateway}`;
+      provider = `email-to-sms:${carrier}`;
+    } else if (channel !== "email") {
+      return jsonResponse({ error: "Unsupported channel" }, 400);
     }
 
     // Fetch the record (tenant-checked via company resolution)
@@ -106,14 +139,14 @@ Deno.serve(async (req) => {
         },
         body: JSON.stringify({
           from: RESEND_FROM,
-          to: [destination],
+          to: [toAddress],
           subject: `Pesticide application notice — ${app.brand_name ?? "record"}`,
           text: body,
         }),
       });
       if (res.ok) {
         const sent = await res.json();
-        providerId = sent.id ?? null;
+        providerId = provider === "resend" ? (sent.id ?? null) : provider;
         status = "sent";
       } else {
         console.error("Resend error", res.status, await res.text());
