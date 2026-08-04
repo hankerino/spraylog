@@ -128,11 +128,13 @@ Future<void> showSubscriptionPaywall(
 
   await showModalBottomSheet<void>(
     context: context,
+    isScrollControlled: true,
     builder: (context) {
       return SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
             Padding(
               padding: const EdgeInsets.all(16),
               child: Text(
@@ -183,7 +185,8 @@ Future<void> showSubscriptionPaywall(
               child: const Text('Restore purchases'),
             ),
             const SizedBox(height: 8),
-          ],
+            ],
+          ),
         ),
       );
     },
